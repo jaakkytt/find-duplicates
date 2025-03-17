@@ -1,7 +1,7 @@
 param(
     [Parameter(
         Mandatory=$true,
-         HelpMessage="Usage example: .\archive.ps1 'C:\path\to\folder'"
+        HelpMessage="Usage example: .\archive.ps1 'C:\path\to\folder'"
     )]
     [string]$dir
 )
@@ -11,7 +11,7 @@ if (-not (Test-Path -Path $dir -PathType Container)) {
     exit 1
 }
 
-. "$PSScriptRoot\archiveFolder.ps1"
+. "$PSScriptRoot\src\archiveFolder.ps1"
 
 $fullPath = Convert-Path $dir
 $fileThreshold = 100

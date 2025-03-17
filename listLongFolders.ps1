@@ -17,7 +17,6 @@ Get-ChildItem -Path $fullPath -Directory -Recurse | ForEach-Object {
     $Folder = $_.FullName
     $RelativePath = $Folder.Substring($fullPath.Length).TrimStart('\','/')
     $FileCount = (Get-ChildItem -Path $Folder | Measure-Object).Count
-    # $FileCount = (Get-ChildItem -Path $Folder -File | Measure-Object).Count
     [PSCustomObject]@{
         FileCount = $FileCount
         RelativePath = $RelativePath
