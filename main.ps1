@@ -1,5 +1,5 @@
 # Define variables
-$paths = @("D:\Archive\Dev", "D:\Archive\Games")
+$paths = @("C:\Archive\Dev", "C:\Archive\Games")
 $includeFiles = @("*.zip", "*.txt", "*.html")
 $exclude = @(".svn", "blog*")
 
