@@ -1,16 +1,15 @@
 function Test-PathPattern {
     param (
         [string]$Path,
-        [string[]]$Patterns
+        [string[]]$Patterns = @()
     )
-    if (-not $Patterns) {
-        return $false
-    }
+
     foreach ($pattern in $Patterns) {
         if ($Path -like $pattern) {
             return $true
         }
     }
+
     return $false
 }
 
@@ -27,7 +26,6 @@ function Search-Directory {
         $name = $_.Name
 
         if ($ExcludePatterns -and (Test-PathPattern -Path $name -Patterns $ExcludePatterns)) {
-            Write-Debug "Excluding: $fullPath"
             return
         }
 
@@ -45,7 +43,6 @@ function Search-Directory {
         $name = $_.Name
 
         if ($ExcludePatterns -and (Test-PathPattern -Path $name -Patterns $ExcludePatterns)) {
-            Write-Debug "Excluding: $fullPath"
             return
         }
 
@@ -66,23 +63,17 @@ function Search-Path {
         [hashtable]$Results
     )
 
-    if ($item.PSIsContainer) {
-        if ($ExcludePatterns -and (Test-PathPattern -Path $item.Name -Patterns $ExcludePatterns)) {
-            Write-Debug "Excluding: $($item.FullName)"
-            return
-        }
+    if ($ExcludePatterns -and (Test-PathPattern -Path $item.Name -Patterns $ExcludePatterns)) {
+        return
+    }
 
+    if ($item.PSIsContainer) {
         $results.Folders += $item.FullName
 
         return Search-Directory -Directory $item.FullName `
             -IncludeFilePatterns $IncludeFilePatterns `
             -ExcludePatterns $ExcludePatterns `
             -Results $results
-    } 
-
-    if ($ExcludePatterns -and (Test-PathPattern -Path $item.Name -Patterns $ExcludePatterns)) {
-        Write-Debug "Excluding: $($item.FullName)"
-        return
     }
 
     if ($IncludeFilePatterns) {
@@ -100,7 +91,7 @@ function Search-Paths {
         [string[]]$IncludeFilePatterns,
         [string[]]$ExcludePatterns
     )
-    
+
     $results = @{ Files = @(); Folders = @(); }
 
     $Paths |`
