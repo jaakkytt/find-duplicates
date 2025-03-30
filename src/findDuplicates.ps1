@@ -37,13 +37,22 @@ function Find-Duplicates {
     foreach ($entry in $suspectedDuplicates) {
         Write-Host "`nSuspected duplicate folders by name: $($entry.Key)" -ForegroundColor Blue
         foreach ($p in $entry.Value) {
-            Write-Host "  - $p" -ForegroundColor Green
+            Write-Host "  $p" -ForegroundColor Green
         }
     }
 
     $actualDuplicates = @{}
 
+    $total = $suspectedDuplicates.Count
+    $current = 0
+
     foreach ($entry in $suspectedDuplicates) {
+        $current++
+
+        Write-Progress -Activity "Verifying suspected duplicates..." `
+            -Status "Processing $current of $total suspected names: $($entry.Key)" `
+            -PercentComplete (($current / $total) * 100)
+
         $folderName = $entry.Key
         $paths = $entry.Value
 
@@ -74,10 +83,12 @@ function Find-Duplicates {
         }
     }
 
+    Write-Progress -Activity "Done" -Completed
+
     foreach ($entry in $actualDuplicates.GetEnumerator()) {
         Write-Host "`nFolders with duplicate content: '$($entry.Key)'"  -ForegroundColor Red
         foreach ($p in $entry.Value) {
-            Write-Host "  - $p" -ForegroundColor Yellow
+            Write-Host "  $p" -ForegroundColor Yellow
         }
     }
 
